@@ -9,6 +9,9 @@ import time
 # Increase the maximum image size to avoid DecompressionBombWarning
 warnings.simplefilter("ignore", Image.DecompressionBombWarning)
 
+# Set the directory path here
+DIRECTORY_PATH = "/srv/backups/iPhone_Photos"
+
 def is_valid_image(file_path):
     try:
         Image.open(file_path).close()
@@ -82,8 +85,7 @@ if __name__ == "__main__":
     start_time = time.time()
 
     target_date = datetime.today().replace(year=1900)  # Set the target date to today's date, but with year 1900
-    directory = "/srv/backups/iPhone_Photos"  # Use the specified directory path
-    photos_info = get_photos_taken_on_date(directory, target_date)
+    photos_info = get_photos_taken_on_date(DIRECTORY_PATH, target_date)
 
     if photos_info:
         copied_images_dir = "copied_images"
