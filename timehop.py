@@ -4,6 +4,7 @@ from datetime import datetime
 from PIL import Image
 import warnings
 import shutil
+import time
 
 # Increase the maximum image size to avoid DecompressionBombWarning
 warnings.simplefilter("ignore", Image.DecompressionBombWarning)
@@ -78,16 +79,27 @@ def generate_html(photos_info, copied_images_dir):
     return html
 
 if __name__ == "__main__":
+    start_time = time.time()
+
     target_date = datetime.today().replace(year=1900)  # Set the target date to today's date, but with year 1900
-    directory = "/srv/backups/iPhone_Photos/"  # Use the specified directory path
+    directory = "/srv/backups/iPhone_Photos"  # Use the specified directory path
     photos_info = get_photos_taken_on_date(directory, target_date)
 
     if photos_info:
         copied_images_dir = "copied_images"
         copy_images_to_directory(photos_info, copied_images_dir)
         html_content = generate_html(photos_info, copied_images_dir)
-        with open("photos_summary.html", "w") as html_file:
+
+        today_date_str = datetime.today().strftime('%Y%m%d')
+        html_filename = f"{today_date_str}_photos_summary.html"
+        
+        with open(html_filename, "w") as html_file:
             html_file.write(html_content)
-        print("HTML file generated successfully!")
+
+        end_time = time.time()
+        total_time = end_time - start_time
+
+        print(f"HTML file '{html_filename}' generated successfully!")
+        print(f"Total execution time: {total_time:.2f} seconds")
     else:
         print("No photos taken on today's date in any previous year were found.")
